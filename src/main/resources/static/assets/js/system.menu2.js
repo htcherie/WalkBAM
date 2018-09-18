@@ -25,7 +25,8 @@ var _menus=[
     //设置登录窗口
     function openPwd() {$('#updatePwd').window({title: '修改密码', width: 300, modal: true, shadow: true, closed: true, height: 160, resizable:false }); }
     //关闭登录窗口
-    function closePwd() {$('#updatePwd').window('close');}
+    function closePwd() {$('#updatePwd').window('close');$('#txtNewPass').val('');
+        $('#txtRePass').val(''); }
 
     //修改密码
     function serverLogin() {

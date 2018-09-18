@@ -17,6 +17,7 @@ spring:
 #    url: jdbc:mysql://127.0.0.1:3306/walk
     username: root
     password: z@2418
+#    password: 5615
 
   jackson:
     date-format: yyyy-MM-dd HH:mm

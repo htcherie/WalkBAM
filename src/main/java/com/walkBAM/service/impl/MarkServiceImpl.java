@@ -62,6 +62,13 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
+    public boolean destroyOrder(Integer m_id) {
+        if (markDao.deleteOrder(m_id)>0)
+            return true;
+        return false;
+    }
+
+    @Override
     public boolean destroyUserMark(Integer m_uid) {
         if (markDao.deleteUserMark(m_uid)>0)
             return true;

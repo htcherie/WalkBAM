@@ -9,6 +9,10 @@
         DELETE FROM `scenery` WHERE s_id=#{s_id}
     </delete>
 
+    <delete id="deleteOrder">
+        DELETE FROM `the_order` WHERE s_id = #{s_id}
+    </delete>
+
     <delete id="deleteMarkScenery">
         DELETE FROM `scenery` WHERE m_id=#{m_id}
     </delete>

@@ -60,10 +60,7 @@
 
 <script src="assets/js/jquery2.1.1.js" type="text/javascript"></script>
 <script src="assets/js/jquery.easyui.min.js" type="text/javascript"></script>
-<!-- <script src="../assets/js/viewUI_tab.js" type="text/javascript"></script> -->
-<script src="assets/js/custom.js" type="text/javascript"></script>
 <script src="assets/js/layer.js" type="text/javascript"></script>
-<script src="assets/json/combobox_data.js" type="text/javascript"></script>
 <script type="text/javascript">
     var editRow = null;
     var state = true;
@@ -190,8 +187,8 @@
     }
 
     function Delete(id) {
-        $.post("destroyMerch.action?id=" + id+"&time="+new Date(), function (date) {
-            $dgg.datagrid('load', {
+        $.post("destroyAMerchant.action?id=" + id+"&time="+new Date(), function () {
+            $dgg.datagrid('reload', {
                 m_state: m_state
             });
         })

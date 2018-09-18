@@ -126,10 +126,6 @@
 
 <script src="assets/js/jquery2.1.1.js" type="text/javascript"></script>
 <script src="assets/js/jquery.easyui.min.js" type="text/javascript"></script>
-<!-- <script src="../assets/js/viewUI_tab.js" type="text/javascript"></script> -->
-<script src="assets/js/custom.js" type="text/javascript"></script>
-<script src="assets/js/layer.js" type="text/javascript"></script>
-<script src="assets/json/combobox_data.js" type="text/javascript"></script>
 <script src="assets/css/zoomify.js"></script>
 
 <script type="text/javascript">
@@ -238,19 +234,16 @@
         });
     };
 
+
+
     function Delete(id) {
-        $.post("destroyScen.action?id=" + id, function (date) {
-            $dgg.datagrid('load', {
-                m_state: m_state
+        $.post("destroyScen.action?id=" + id+"&time="+new Date(), function (date) {
+            $dgg.datagrid('reload', {
+                s_state: s_state
             });
-            $.messager.show({
-                title: '消息',
-                msg: date['msg'],
-                timeout: 5000,
-                showType: 'slide'
-            });
-        })
+        });
     }
+
 
     function Details(id) {
         $win.panel('open');

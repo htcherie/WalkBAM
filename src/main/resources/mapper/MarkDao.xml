@@ -9,6 +9,10 @@
         DELETE FROM `mark` WHERE m_id=#{m_id}
     </delete>
 
+    <delete id="deleteOrder">
+        DELETE FROM `the_order` WHERE m_id = #{m_id}
+    </delete>
+
     <delete id="deleteUserMark">
         DELETE FROM `mark` WHERE m_uid=#{m_uid}
     </delete>

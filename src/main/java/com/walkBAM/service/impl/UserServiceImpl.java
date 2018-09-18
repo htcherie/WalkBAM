@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
             if (application.getAttribute(username) == null) { // 说明还没有用户登录
                 CookieUtils.saveCookie("user",username, response, request);
                 CookieUtils.removeCookie(request,response,"msg");
-                session.setAttribute("user",username);
+                session.setAttribute("user",user1);
                 application.setAttribute(username, session.getId());
                 if (rembername.equals("true")){
                     CookieUtils.saveCookie("rembername","rember", response, request);

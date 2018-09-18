@@ -18,5 +18,7 @@ public interface SceneryDao {
 
     public int deleteScenery(@Param("s_id") Integer s_id);
 
+    public int deleteOrder(@Param("s_id")Integer s_id);
+
     public int deleteMarkScenery(@Param("m_id") Integer m_id);
 }

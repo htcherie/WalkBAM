@@ -18,4 +18,6 @@ public interface MarkDao {
     public int deleteMark(@Param("m_id") Integer m_id);
 
     public int deleteUserMark(@Param("m_uid") Integer m_uid);
+
+    public int deleteOrder(@Param("m_id")Integer m_id);
 }

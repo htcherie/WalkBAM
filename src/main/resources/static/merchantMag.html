@@ -73,10 +73,6 @@
 
 <script src="assets/js/jquery2.1.1.js" type="text/javascript"></script>
 <script src="assets/js/jquery.easyui.min.js" type="text/javascript"></script>
-<!-- <script src="../assets/js/viewUI_tab.js" type="text/javascript"></script> -->
-<script src="assets/js/custom.js" type="text/javascript"></script>
-<script src="assets/js/layer.js" type="text/javascript"></script>
-<script src="assets/json/combobox_data.js" type="text/javascript"></script>
 <script src="assets/js/jquery.edatagrid.js"></script>
 <script type="text/javascript">
     var editRow = null;
@@ -85,6 +81,7 @@
         url: "merchantFind.action?tt="+new Date(),
         updateUrl: "modifyMerchant.action?tt="+new Date(),
         destroyUrl: "destroyMerchant.action?tt="+new Date(),
+        idField:'m_id',
         striped: true,			//隔行变色
         fitColumns: true,		//匹配列宽，false使用固定值
         //匹配父容器，panel属性
@@ -152,10 +149,10 @@
 
         var rows = $dgg.edatagrid('getSelections');
         editRow = $dgg.edatagrid('getRowIndex', rows[0]);
-        alert(editRow);
+
         if (editRow != null) {
             //触发onAfterEdit事件
-            alert(editRow);
+
 
             $dgg.edatagrid('endEdit', editRow);
             $dgg.edatagrid('saveRow');
@@ -165,7 +162,7 @@
     //        编辑
     function UpdateData(rowIndex) {
         if (editRow != null) {
-            alert(editRow);
+
             $dgg.edatagrid('cancelEdit', editRow);
             editRow = null;
         }

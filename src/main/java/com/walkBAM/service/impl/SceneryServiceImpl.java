@@ -28,6 +28,13 @@ class SceneryServiceImpl implements SceneryService {
     }
 
     @Override
+    public boolean destroyOrder(Integer s_id) {
+        if(sdao.deleteOrder(s_id)>0)
+            return true;
+        return false;
+    }
+
+    @Override
     public boolean destroyMarkScenery(Integer m_id) {
         if(sdao.deleteMarkScenery(m_id)>0)
             return true;

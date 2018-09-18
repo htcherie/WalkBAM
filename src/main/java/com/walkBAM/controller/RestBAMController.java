@@ -130,11 +130,14 @@ public class RestBAMController {
         System.out.println(id);
         Map<String, Object> map = new HashMap<>();
         Mark mark = ms.finMarkByUid(id);
-        boolean scenRes = ss.destroyMarkScenery(mark.getM_id());
+        if (mark != null) {
+            boolean orderRes = ms.destroyOrder(mark.getM_id());
+            boolean scenRes = ss.destroyMarkScenery(mark.getM_id());
+        }
         boolean markRes = ms.destroyUserMark(id);
         boolean res = us.destroyUser(id);
         System.out.println(res);
-        if (res)
+        if (res == true)
             map.put("msg", "删除用户成功");
         else
             map.put("msg", "删除用户失败");
@@ -173,6 +176,8 @@ public class RestBAMController {
         System.out.println("destroyMerchant...");
         System.out.println(id);
         Map<String, Object> map = new HashMap<>();
+
+        ms.destroyOrder(id);
         ss.destroyMarkScenery(id);
         boolean res = ms.destroyMark(id);
         System.out.println(res);
@@ -218,9 +223,10 @@ public class RestBAMController {
         System.out.println("destroyAMerchant...");
         System.out.println(id);
         Map<String, Object> map = new HashMap<>();
+        boolean orderRes = ms.destroyOrder(id);
         boolean scenRes = ss.destroyMarkScenery(id);
         boolean MarkRes = ms.destroyMark(id);
-        if (scenRes == true && MarkRes == true)
+        if (scenRes == true && MarkRes == true &&orderRes == true)
             map.put("msg", "删除商家成功");
         else
             map.put("msg", "删除商家失败");
@@ -299,6 +305,7 @@ public class RestBAMController {
         System.out.println("destroyScen...");
         System.out.println(id);
         Map<String, Object> map = new HashMap<>();
+        ss.destroyOrder(id);
         boolean res = ss.destroyScenery(id);
         System.out.println(res);
         if (res)

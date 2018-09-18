@@ -8,6 +8,8 @@ import java.util.Map;
 public interface SceneryService {
     public boolean destroyScenery(Integer s_id);
 
+    public boolean destroyOrder(Integer s_id);
+
     public boolean destroyMarkScenery(Integer m_id);
 
     public boolean modifyScenery(Integer s_id,Integer s_state);
