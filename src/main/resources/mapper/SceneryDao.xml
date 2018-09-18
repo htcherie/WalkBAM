@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.walkBAM.dao.SceneryDao">
+
+
+    <delete id="deleteScenery">
+        DELETE FROM `scenery` WHERE s_id=#{s_id}
+    </delete>
+
+    <delete id="deleteMarkScenery">
+        DELETE FROM `scenery` WHERE m_id=#{m_id}
+    </delete>
+
+
+    <update id="updateScenery">
+        UPDATE `scenery` set `s_state`=#{s_state},`s_audit`=NOW() where `s_id`=#{s_id}
+    </update>
+
+
+    <select id='selectAllScenery' resultType="hashmap">
+        SELECT * FROM (
+        SELECT s.`s_id`,c.c_name,s.s_num,s.m_id AS
+        s_mid,s.s_title,s.s_txt,s.s_img,s.s_fmImg,s.s_click,s.s_price,s.s_price_yuan,s.s_state,s.s_audit,m.m_id,m.m_name,m.m_address,m.m_phone,m.m_uid,u.u_id,u.u_name,u.u_phone
+        FROM ((scenery s INNER JOIN mark m ON s.`m_id` = m.`m_id`) INNER JOIN USER u ON m.`m_uid`=u.`u_id`) INNER JOIN city c ON s.s_city = c.c_id
+        <where>
+            <if test="search != null and search != ''">
+                s_id LIKE concat('%',#{search},'%') or
+                c_name LIKE concat('%',#{search},'%') or
+                s_num LIKE concat('%',#{search},'%') or
+                s_title LIKE concat('%',#{search},'%') or
+                s_txt LIKE concat('%',#{search},'%') or
+                s_click LIKE concat('%',#{search},'%') or
+                s_price LIKE concat('%',#{search},'%') or
+                s_price_yuan LIKE concat('%',#{search},'%') or
+                m_name LIKE concat('%',#{search},'%') or
+                m_phone LIKE concat('%',#{search},'%') or
+                u_name LIKE concat('%',#{search},'%')
+            </if>
+        </where>
+        ) a
+        <where>
+            <choose>
+                <when test="s_state == 99">
+                    a.`s_state` != 0
+                </when>
+                <when test="s_state !=null">
+                    a.`s_state` = #{s_state}
+                </when>
+            </choose>
+        </where>
+        <if test="s_state == 99">
+            order by s_audit desc
+        </if>
+    </select>
+
+    <select id="selectSceneryById" resultType="hashmap">
+      select * from (
+        SELECT s.`s_id`,s.s_num,s.m_id AS s_mid,s.s_title,s.s_txt,s.s_img,s.s_fmImg,s.s_click,s.s_price,s.s_price_yuan,s.s_state,s.s_audit,m.m_id,m.m_name,m.m_address,m.m_phone,m.m_uid,u.u_id,u.u_name,u.u_phone FROM (scenery s INNER JOIN mark m ON s.`m_id` = m.`m_id`) INNER JOIN USER u ON m.`m_uid`=u.`u_id`) a
+        where a.s_id = #{s_id}
+    </select>
+
+    <select id="selectSceneryByMid" resultType="Scenery">
+      SELECT * FROM scenery WHERE m_id = #{m_id}
+    </select>
+
+</mapper>
+
+

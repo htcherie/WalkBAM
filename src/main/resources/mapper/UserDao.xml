@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.walkBAM.dao.UserDao">
+
+    <insert id='insertUser' parameterType="User"
+            keyColumn="u_id" keyProperty="u_id">
+                        INSERT INTO `user`(u_name,`u_nickname`,`u_password`,`u_root`,`u_phone`,`u_idcard`,`u_cert`) VALUES(#{user.u_name},#{user.u_nickname},#{user.u_password},#{user.u_root},#{user.u_phone},#{user.u_idcard},#{user.u_cert})
+                        </insert>
+
+    <delete id="deleteUser">
+        DELETE FROM `user` WHERE u_id=#{u_id}
+    </delete>
+
+    <update id="updateUser">
+        UPDATE `user`
+        <set>
+            <if test="user.u_name != null or user.u_name != ''">
+                `u_name`=#{user.u_name},
+            </if>
+            <if test="user.u_nickname != null or user.u_nickname != ''">
+                `u_nickname`=#{user.u_nickname},
+            </if>
+            <if test="user.u_password != null or user.u_password != ''">
+                `u_password`=#{user.u_password},
+            </if>
+            <if test="user.u_root != null or user.u_root != ''">
+                `u_root`=#{user.u_root},
+            </if>
+            <if test="user.u_phone != null or user.u_phone != ''">
+                `u_phone`=#{user.u_phone},
+            </if>
+            <if test="user.u_idcard != null or user.u_idcard != ''">
+                `u_idcard`=#{user.u_idcard},
+            </if>
+            <if test="user.u_cert != null or user.u_cert != ''">
+                `u_cert`=#{user.u_cert},
+            </if>
+        </set>
+        <where>
+            <if test="user.u_id != null or user.u_id != ''">
+                `u_id`=#{user.u_id}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateAdminPwd">
+        update `user` set `u_password`=#{user.u_password} where `u_id`=#{user.u_id}
+    </update>
+
+
+
+    <select id='selectUser' resultType="User">
+ 		SELECT * FROM USER WHERE  u_nickname = #{user.u_nickname} AND u_password = #{user.u_password}
+ 	</select>
+
+    <select id='selectAllUser' resultType="hashmap">
+        select * from (
+        SELECT * FROM USER AS u INNER JOIN root AS r ON u.`u_root` = r.`root_id` INNER JOIN cert AS c ON u.`u_cert` =
+        c.`certid`
+        <where>
+            <if test="search != null and search != ''">
+                and u_id LIKE concat('%',#{search},'%') or
+                u_name LIKE concat('%',#{search},'%') or
+                u_nickname LIKE concat('%',#{search},'%') or
+                u_phone LIKE concat('%',#{search},'%') or
+                u_idcard LIKE concat('%',#{search},'%')
+            </if>
+        </where>
+        ) t
+        <where>
+            <if test="u_root != null and u_root != '' and u_root != '0'">
+                u_root = #{u_root}
+            </if>
+            <if test="u_cert != null and u_cert != '' and u_cert != '0'">
+                and
+            </if>
+            <if test="u_cert != null and u_cert != '' and u_cert != '0'">
+                u_cert = #{u_cert}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
+
+

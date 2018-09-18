@@ -1,0 +1,139 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>漫行管理后台登陆</title>
+    <meta name="robots" content="all">
+    <link rel="Bookmark" href="assets/images/logoIco.ico"/>
+    <link rel="Shortcut Icon" href="assets/images/logoIco.ico"/>
+    <link type="text/css" rel="stylesheet" href="assets/default/login/css/login.css">
+</head>
+<body>
+
+<!--头部start-->
+<div class="login-header">
+    <div id="login-header-nav" class="nobogder">
+        <div id="login-header-nav_ctx">
+            <div class="l mt10px">
+                <a href="javascript:;" class="logoicon">logo图标</a>
+                <a href="javascript:;" class="logo_title">logo名称</a>
+                <a class="line"></a>
+                <a href="javascript:;" class="e">logo副标题</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--头部end-->
+
+<form id="loginForm" name="loginForm" action="/walkBAM/login.action" class="fm-v clearfix" method="post">
+    <input type="hidden" name="lt">
+    <input type="hidden" name="execution" value="e1s1">
+    <input type="hidden" name="_eventId" value="submit">
+    <input type="hidden" name="userType" value="0">
+    <input id="rembername" name="rembername" type="hidden" class="fr" data-cacheval="false" value="false">
+
+    <!--登录start-->
+    <div class="ordinaryLogin">
+        <div class="login_ad">
+            <div class="bg_ordLogin"><img src="assets/default/login/images/tooopen.jpg"/></div>
+            <div class="loginCont_dk post05" style="right: -17px;">
+                <div class="loginCont">
+                    <div class="login_th"><h4 class="lgCurr bd_r">用户登录</h4>
+                        <a href="javascript:;" class="login_help"></a>
+                    </div>
+                    <div class="login_text">
+                        <!-- error start -->
+                        <div class="login-error">
+                            <label id="EEE" class="login_error_tips" style="display:none;"></label>
+                        </div>
+                        <!-- end -->
+                        <div class="user_parent">
+                            <div class="login_input user_bg unm">
+                                <input name="u_nickname" id="username" tabindex="1" type="text"
+                                       class="usernameSty"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="user_paswd">
+                            <div class="login_input user_bg pwd" name="pwdParent" id="pwdParent">
+                                <div id="newPwd" class="keyboards-box">
+                                    <input id="keyboards" value="" type="password" name="u_password" tabindex="3"
+                                           pa_ui_name="keyboard" pa_ui_keyboard_position="place"
+                                           pa_ui_key_type="advance" class="styTextinput w162px" maxlength="20">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="height:10px"></div>
+                        <div class="remeber_name">
+                            <b id="checked" class="normal" onclick="changeCheckRembername();"></b>
+                            <label id="login_save" style="float: left;">记住用户名</label>
+
+                        </div>
+                    </div>
+                    <div class="login_ck">
+                        <input name="submitBtn" id="submitBtn" type="submit" tabindex="5" class="login_btn"
+                               value="登录">
+                    </div>
+                    <div style="height:24px"></div>
+                </div>
+            </div>
+            <div class="filter box_shadow"></div>
+            <!--用户名密码出错弹出层start-->
+            <div id="user_pwd_er" class="login_error_w" style="position: absolute;left: 780px;top:96px; ">
+                <div class="login_error">
+                    <div class="login_error_th"><h4 id="msg"></h4></div>
+                </div>
+            </div>
+            <!--用户名密码出错弹出层end-->
+        </div>
+    </div>
+    <!--登录end-->
+</form>
+<!--底部start-->
+<div style="clear:both"></div>
+<div class="footBorder_t01">
+    <div class="ce_about_foot">
+
+        <span style="align-content: center"> &copy; Copyright ©2018.漫行旅游网</span>
+    </div>
+</div>
+<!--底部end-->
+
+
+<script src="assets/js/jquery2.1.1.js" type="text/javascript"></script>
+<!-- <script src="assets/login/js/jquery-ui.min.js" type="text/javascript"></script>
+<script src="assets/login/js/pa_ui.js" type="text/javascript"></script>
+<script src="assets/login/js/pa_ui_misc.js" type="text/javascript"></script> -->
+<script type="text/javascript">
+
+    $.ajax({
+        url: "loginMsg.action?time="+new Date(),
+        success: function (data) {
+            $("#msg").html(data["msg"])
+            if (data["rembername"]=="rember") {
+                $("#username").val(data["user"]);
+                document.getElementById("rembername").value = 'true';
+                $('#checked').attr("class", "checked");
+            }
+        }
+    });
+
+    $("#other-login").click(function () {
+        $("#login_list").toggle();
+    });
+
+    //处理记住用户名
+    function changeCheckRembername() {
+        var rembername = document.getElementById("rembername").value;
+        if (rembername == 'true') {//选中，置为不选中
+            document.getElementById("rembername").value = 'false';
+            $('#checked').attr("class", "normal");
+        } else {
+            document.getElementById("rembername").value = 'true';
+            $('#checked').attr("class", "checked");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="HTML, CSS, js">
+    <meta name="author" content="poya, dj, view Easy-UI">
+
+    <title>用户管理</title>
+    <meta property="og:url" content="">
+    <meta property="og:title" content="EasyUI">
+    <meta property="og:description" content="HTML, CSS, JS">
+
+    <meta property="og:image" content="">
+    <link href="assets/css/reset.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/js/themes/default/easyui.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/layout.css" rel="stylesheet" type="text/css"/>
+
+
+</head>
+<body scroll="no" class="body-pd10">
+<div class="dataView-container">
+    <div class="table-container">
+        <div class="tabs-wrapper">
+            <div class="comp-search-box">
+                <div class="screen-top">
+                    <div class="colRow">
+                        <input id="keyword" type="text" class="easyui-textbox" name="name"
+                               data-options="label:'关键字'"/>
+                    </div>
+                    <div class="colRow">
+                        <button id="search" class="easyui-linkbutton btnDefault">
+                            <i class="fa fa-search"></i>查询
+                        </button>
+                    </div>
+
+                    <div class="colRow">
+                        <a id="empty">清空</a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="btnbar-tools">
+                <a href="#" onclick="javascript:AuditList();" class="count"><i
+                        class="fa fa-pie-chart purple"></i>审核列表</a>
+                <a href="#" onclick="javascript:Historical();" class="count"><i class="fa fa-pie-chart purple"></i>审核记录</a>
+            </div>
+            <table id="dg" class="table table-fixed table-dotted table-hover">
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- 新增和编辑数据 -->
+
+<script src="assets/js/jquery2.1.1.js" type="text/javascript"></script>
+<script src="assets/js/jquery.easyui.min.js" type="text/javascript"></script>
+<!-- <script src="../assets/js/viewUI_tab.js" type="text/javascript"></script> -->
+<script src="assets/js/custom.js" type="text/javascript"></script>
+<script src="assets/js/layer.js" type="text/javascript"></script>
+<script src="assets/json/combobox_data.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var editRow = null;
+    var state = true;
+    var m_state = null;
+    var keyword = "";             //关键字
+    var $dgg = $('#dg').datagrid({
+        url: "merchantAFind.action?tt=" + new Date(),
+        striped: true,			//隔行变色
+        fitColumns: true,		//匹配列宽，false使用固定值
+        //匹配父容器，panel属性
+        nowrap: true,
+        //分页--开始
+        pagination: true,
+        pagePosition: 'bottom', //bottom
+        pageSize: 10,
+        pageList: [5, 10, 15, 20],
+        pageNumber: 1,
+        total: 100,//总记录数  不知到干什么用的
+        onSelectPage: function (pageNumber, pageSize) {
+            console.log(pageNumber, pageSize);
+        },
+        columns: [[
+            {field: 'm_id', title: '商家 ID', width: 40, align: 'center'},
+            {field: 'm_name', title: '商家名称', width: 80, align: 'center'},
+            {field: 'm_address', title: '商家地址', width: 100, align: 'center'},
+            {field: 'm_phone', title: '商家联系方式', width: 85, align: 'center'},
+            {field: 'u_name', title: '法人代表', width: 70, align: 'center'},
+            {field: 'u_nickname', title: '法人用户昵称', width: 80, align: 'center'},
+            {field: 'u_phone', title: '法人联系方式', width: 85, align: 'center'},
+            {field: 'u_idcard', title: '法人身份证号', width: 100, align: 'center'},
+            {
+                field: 'm_state', title: '状态', width: 50, align: 'center',
+                formatter: function (value, row, index) {
+                    if (row.m_state == 0) {
+                        return "审核中";
+                    } else if (row.m_state == 1) {
+                        return "审核成功";
+                    } else if (row.m_state == 2) {
+                        return "审核失败";
+                    }
+                }
+            },
+            {field: 'm_audit', title: '审核时间', width: 140, align: 'center', hidden: 'true'},
+            {
+                field: 'action', title: '审核', width: 80, align: 'center',
+                formatter: function (value, row, index) {
+                    if (state) {
+                        var s = '<a href="#" onclick="javascript:Success(' + row.m_id + ')">成功</a> ';
+                        var c = '<a href="#" onclick="javascript:Failure(' + row.m_id + ')">失败</a>';
+                        return s + c;
+                    } else {
+                        if (row.m_state == 2) {
+                            var d = '<a href="#" onclick="javascript:Delete(' + row.m_id + ')">删除</a>';
+                            return d;
+                        } else if (row.m_state == 1) {
+                            return "";
+                        }
+                    }
+                }
+            }
+        ]],
+        //分页--结束
+        onError: function (index, row) {
+            $.messager.show({
+                title: '消息',
+                msg: row.msg,
+                timeout: 5000,
+                showType: 'slide'
+            });
+        }
+    });
+    $("#search").click(function () {
+        keyword = $("#keyword").val();
+        $dgg.datagrid('reload', {
+            keyword: keyword,
+            m_state: m_state
+        });
+    });
+
+    $("#empty").click(function () {
+        $("#keyword").textbox('setValue', '');
+    });
+
+    var pager = $('#dg').datagrid('getPager');
+    pager.pagination({
+        beforePageText: '第',
+        afterPageText: '页, 共 {pages} 页',
+        displayMsg: '显示第 {from} 到 {to} 条记录，共 {total} 条记录'
+        //layout:['first','prev','links','next','last','manual']
+    });
+
+    function Historical() {
+        state = false;
+        m_state = 99;
+        $dgg.datagrid('showColumn', 'm_audit');
+        $dgg.datagrid('load', {
+            m_state: m_state
+        });
+    };
+
+    function AuditList() {
+        state = true;
+        m_state = null;
+        $dgg.datagrid('hideColumn', 'm_audit');
+        $dgg.datagrid('load', {
+            m_state: m_state
+        });
+    };
+
+    function Success(id) {
+        $.post("auditMerchantSuccess.action?id=" + id+"&time="+new Date(), function (date) {
+            $dgg.datagrid('load', {
+                m_state: m_state
+            });
+        })
+    }
+
+    function Failure(id) {
+        $.post("auditMerchantFailure.action?id=" + id+"&time="+new Date(), function (date) {
+            $dgg.datagrid('load', {
+                m_state: m_state
+            });
+        })
+    }
+
+    function Delete(id) {
+        $.post("destroyMerch.action?id=" + id+"&time="+new Date(), function (date) {
+            $dgg.datagrid('load', {
+                m_state: m_state
+            });
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="HTML, CSS, js">
+    <meta name="author" content="poya, dj, view Easy-UI">
+
+    <title>用户管理</title>
+    <meta property="og:url" content="">
+    <meta property="og:title" content="EasyUI">
+    <meta property="og:description" content="HTML, CSS, JS">
+
+    <meta property="og:image" content="">
+    <link href="assets/css/reset.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/js/themes/default/easyui.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/layout.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="assets/css/zoomify.css">
+
+
+</head>
+<body scroll="no" class="body-pd10">
+<div class="dataView-container">
+    <div class="table-container">
+        <div class="tabs-wrapper">
+            <div class="comp-search-box">
+                <div class="screen-top">
+                    <div class="colRow">
+                        <input id="keyword" type="text" class="easyui-textbox" name="name"
+                               data-options="label:'关键字'"/>
+                    </div>
+                    <div class="colRow">
+                        <button id="search" class="easyui-linkbutton btnDefault">
+                            <i class="fa fa-search"></i>查询
+                        </button>
+                    </div>
+
+                    <div class="colRow">
+                        <a id="empty">清空</a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="btnbar-tools">
+                <a href="#" onclick="javascript:AuditList();" class="count"><i
+                        class="fa fa-pie-chart purple"></i>审核列表</a>
+                <a href="#" onclick="javascript:Historical();" class="count"><i class="fa fa-pie-chart purple"></i>审核记录</a>
+            </div>
+            <table id="dg" class="table table-fixed table-dotted table-hover">
+
+            </table>
+        </div>
+    </div>
+
+    <div id="win" style="padding:10px;">
+
+
+        <table style="padding: 10px;" width="100%">
+            <tr style="height: 50px;">
+                <td>景点 ID:</td>
+                <td id="s_id">1</td>
+                <td>景点标题:</td>
+                <td id="s_title" colspan="3">长沙+张家界+天门山+大峡谷+湘西+凤凰5日4晚跟团游</td>
+            </tr>
+            <tr style="height: 50px;">
+                <td>景点详情:</td>
+                <td colspan="6"><p id="s_txt" style="width: 680px;">张家界+天门山+湘西+凤凰5日4晚跟团游(5钻)·「3重vip礼遇-国庆惠-直飞张家界」销量&好评双优
+                    限时2晚免费升皇冠假日 明星导游纯玩 A线绝代双骄(天门山+核心景区)赠天子山索道跟团游 B线天门山+全程用车半自由行</p></td>
+            </tr>
+            <tr style="height: 50px;">
+                <td>所属商家:</td>
+                <td id="m_name">乐视集团</td>
+                <td>商家联系人:</td>
+                <td id="u_name">老蒋</td>
+                <td>联系方式:</td>
+                <td id="m_phone">13574785615</td>
+            </tr>
+            <tr style="height: 50px;">
+                <td>景点封面:</td>
+                <td colspan="2">
+                    <div id="s_fmImg"><img class="imgbag" style="margin: 10px;" width="90px" height="67.5px"
+                                           src="assets/default/images/qq.jpg">
+                    </div>
+                </td>
+                <td>景点所属城市:</td>
+                <td id="c_name">拉萨</td>
+                <td>景点评分:</td>
+                <td id="s_num">3.3</td>
+            </tr>
+            <tr style="height: 50px;">
+                <td width="160px">景区轮播图片:</td>
+                <td colspan="5">
+                    <div><span id="lb_img"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 50px;">
+                <td width="160px">景区详情图片:</td>
+                <td colspan="5">
+                    <div><span id="xq_img"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 50px;">
+                <td>原价门票:</td>
+                <td align="center" colspan="2">￥<span id="s_price_yuan">34865</span></td>
+                <td>折扣门票:</td>
+                <td align="center" colspan="1">￥<span id="s_price">199</span></td>
+            </tr>
+            <tr style="height: 50px;">
+                <td colspan="6" align="center" valign="middle" id="cz">
+                    <input style="margin: 10px" type="button" id="pSuccess" value="审核成功">
+                    <input style="margin: 10px" type="button" id="pFailure" value="审核失败">
+                    <input style="margin: 10px" type="button" id="pClose" value="关闭">
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+
+<!-- 新增和编辑数据 -->
+
+<script src="assets/js/jquery2.1.1.js" type="text/javascript"></script>
+<script src="assets/js/jquery.easyui.min.js" type="text/javascript"></script>
+<!-- <script src="../assets/js/viewUI_tab.js" type="text/javascript"></script> -->
+<script src="assets/js/custom.js" type="text/javascript"></script>
+<script src="assets/js/layer.js" type="text/javascript"></script>
+<script src="assets/json/combobox_data.js" type="text/javascript"></script>
+<script src="assets/css/zoomify.js"></script>
+
+<script type="text/javascript">
+    $(".imgbag").zoomify();
+
+    var editRow = null;
+    var state = true;
+    var s_state = null;
+    var keyword = "";             //关键字
+    var $dgg = $('#dg').datagrid({
+        url: "sceneryFind.action?tt=" + new Date(),
+        striped: true,			//隔行变色
+        fitColumns: true,		//匹配列宽，false使用固定值
+        //匹配父容器，panel属性
+        nowrap: true,
+        //分页--开始
+        pagination: true,
+        pagePosition: 'bottom', //bottom
+        pageSize: 10,
+        pageList: [5, 10, 15, 20],
+        pageNumber: 1,
+        total: 100,//总记录数  不知到干什么用的
+        onSelectPage: function (pageNumber, pageSize) {
+            console.log(pageNumber, pageSize);
+        },
+        columns: [[
+            {field: 's_id', title: '景点 ID', width: 40, align: 'center'},
+            {field: 's_title', title: '景区标题', width: 400, align: 'center'},
+            {field: 's_num', title: '评分', width: 60, align: 'center'},
+            {field: 'c_name', title: '所属地', width: 40, align: 'center'},
+            {field: 's_click', title: '点击量', width: 50, align: 'center'},
+            {field: 'm_name', title: '所属商家', width: 100, align: 'center'},
+            {field: 'u_name', title: '商家联系人', width: 80, align: 'center'},
+            {field: 'm_phone', title: '商家联系方式', width: 85, align: 'center'},
+            {
+                field: 's_state', title: '状态', width: 60, align: 'center',
+                formatter: function (value, row, index) {
+                    if (row.s_state == 0) {
+                        return "未审核";
+                    } else if (row.s_state == 1) {
+                        return "审核成功";
+                    } else if (row.s_state == 2) {
+                        return "审核失败";
+                    }
+                }
+            },
+            {field: 's_audit', title: '审核时间', width: 140, align: 'center', hidden: 'true'},
+            {
+                field: 'action', title: '操作', width: 120, align: 'center',
+                formatter: function (value, row, index) {
+                    if (state == false) {
+                        var a = '<a href="#" onclick="javascript:Details(' + row.s_id + ')">【详情】</a> ';
+                        var b = '<a href="#" onclick="javascript:Delete(' + row.s_id + ')">【删除】</a> ';
+                        return a + b;
+                    } else {
+                        return '<a href="#" onclick="javascript:Details(' + row.s_id + ')">【详情】</a> ';
+                    }
+                }
+            }
+        ]],
+        //分页--结束
+        onError: function (index, row) {
+            $.messager.show({
+                title: '消息',
+                msg: row.msg,
+                timeout: 5000,
+                showType: 'slide'
+            });
+        }
+    });
+    $("#search").click(function () {
+        keyword = $("#keyword").val();
+        $dgg.datagrid('reload', {
+            keyword: keyword,
+            s_state: s_state
+        });
+    });
+
+    $("#empty").click(function () {
+        $("#keyword").textbox('setValue', '');
+    });
+
+    var pager = $('#dg').datagrid('getPager');
+    pager.pagination({
+        beforePageText: '第',
+        afterPageText: '页, 共 {pages} 页',
+        displayMsg: '显示第 {from} 到 {to} 条记录，共 {total} 条记录'
+        //layout:['first','prev','links','next','last','manual']
+    });
+
+    function Historical() {
+        state = false;
+        s_state = 99;
+        $dgg.datagrid('showColumn', 's_audit');
+        $dgg.datagrid('load', {
+            s_state: s_state
+        });
+    };
+
+    function AuditList() {
+        state = true;
+        s_state = null;
+        $dgg.datagrid('hideColumn', 's_audit');
+        $dgg.datagrid('load', {
+            s_state: s_state
+        });
+    };
+
+    function Delete(id) {
+        $.post("destroyScen.action?id=" + id, function (date) {
+            $dgg.datagrid('load', {
+                m_state: m_state
+            });
+            $.messager.show({
+                title: '消息',
+                msg: date['msg'],
+                timeout: 5000,
+                showType: 'slide'
+            });
+        })
+    }
+
+    function Details(id) {
+        $win.panel('open');
+        $.ajax({
+            url: "sceneryFindById.action?time="+new Date(),
+            type: "post",
+            data: {
+                "time": new Date(),
+                "s_id": id
+            },
+            dataType: "json",
+            success: function (data) {
+                var scen = data['rows'][0];
+                var lb = data['lb'];
+                var xq = data['xq'];
+                $("#s_id").html(scen['s_id']);
+                $("#s_title").html(scen['s_title']);
+                $("#s_txt").html(scen['s_txt']);
+                $("#m_name").html(scen['m_name']);
+                $("#c_name").html(scen['c_name']);
+                $("#u_name").html(scen['u_name']);
+                $("#m_phone").html(scen['m_phone']);
+                $("#s_num").html(scen['s_num']);
+                $("#s_price_yuan").html(scen['s_price_yuan']);
+                $("#s_price").html(scen['s_price']);
+                $("#s_fmImg").html("<img style=\"margin: 10px;\" width=\"90px\" height=\"67.5px\"\n" +
+                    "                src=\"http://localhost:9352/" + scen['s_fmImg'] + "\">")
+                $("#lb_img").html("");
+                for (var i = 0; i < lb.length; i++) {
+                    $("#lb_img").append("<img style=\"margin: 10px;\" class=\"imgbag\" width=\"90px\" height=\"67.5px\"\n" +
+                        "                                         src=\"http://localhost:9352/walk_img/" + lb[i] + "\">");
+                }
+                $("#xq_img").html("");
+                for (var i = 0; i < xq.length; i++) {
+                    $("#xq_img").append("<img style=\"margin: 10px;\" class=\"imgbag\" width=\"90px\" height=\"67.5px\"\n" +
+                        "                                         src=\"http://localhost:9352/walk_img/" + xq[i] + "\">");
+                }
+
+                if (scen['s_state'] == 0) {
+                    $("#cz").html("<input style=\"margin: 10px\" type=\"button\" onclick='javascript:Psuccess("+scen['s_id']+")' value=\"审核成功\">\n" +
+                        "                    <input style=\"margin: 10px\" type=\"button\" onclick='javascript:Pfailure("+scen['s_id']+")' value=\"审核失败\">\n" +
+                        "                    <input style=\"margin: 10px\" type=\"button\" onclick='javascript:Pclose()' value=\"关闭\">");
+                }else {
+
+                    $("#cz").html("<input style=\"margin: 10px\" type=\"button\" onclick='javascript:Pclose()' value=\"关闭\">")
+                }
+
+
+            }
+        });
+    }
+
+    function Pclose(){
+        $win.panel('close');
+    };
+
+    function Psuccess(id) {
+        $.post("sceneryModify.action?id=" + id+"&s_state=1&time="+new Date(), function (date) {
+            $dgg.datagrid('load', {
+                S_state: s_state
+            });
+        })
+        $win.panel('close');
+    }
+
+    function Pfailure(id) {
+        $.post("sceneryModify.action?id=" + id+"&s_state=2&time="+new Date(),function (date) {
+            $dgg.datagrid('load', {
+                S_state: s_state
+            });
+        })
+        $win.panel('close');
+    }
+
+    var $win = $('#win').window({
+        modal: true,
+        draggable: false,
+        resizable: false,
+        maximizable: false,
+        minimizable: false,
+        collapsible: false,
+        shadow: true,
+        inline: true,
+        constrain: true,
+        width: 800,
+        height: 450,
+        title: '详情',
+        closable: true,
+        openAnimation: 'slide',
+        openDuratio: 50,
+        closeAnimation: 'fade',
+        closeDuration: 50,
+        closed: true,
+        href: '',
+        method: 'post',
+        cache: false,
+    });
+    $win.window("center");
+    $('#win').window("resize", {top: $(document).scrollTop() + ($(window).height() - 500) * 0.5});
+</script>
+</body>
+</html>

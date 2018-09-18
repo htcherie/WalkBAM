@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.walkBAM.dao.StatisDao">
+
+    <select id='selectPending' resultType="integer">
+        SELECT COUNT(0)+(SELECT COUNT(0) FROM scenery WHERE s_state = 0) m_num FROM mark WHERE m_state = 0
+    </select>
+
+    <select id='selectTotal' resultType="double">
+        SELECT SUM(o_price) as total  FROM the_order WHERE o_create LIKE concat(#{date},'%')
+    </select>
+
+    <select id='selectOrderByEveryDay' resultType="integer">
+        SELECT count(0) as num FROM the_order WHERE o_create LIKE concat(#{date},'%')
+    </select>
+
+</mapper>

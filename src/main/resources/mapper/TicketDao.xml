@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.walkBAM.dao.TicketDao">
+
+    <update id="carUpdate">
+        UPDATE carclass SET cc_send = #{sendDate},cc_end = #{endDate} WHERE cc_id = #{id}
+    </update>
+
+    <update id="trainUpdate">
+        UPDATE trainclass SET tc_send = #{sendDate},tc_end = #{endDate} WHERE tc_id = #{id}
+    </update>
+
+    <update id="planeUpdate">
+        UPDATE planeclass SET pc_send = #{sendDate},pc_end = #{endDate} WHERE pc_id = #{id}
+    </update>
+
+
+    <select id='selectCar' resultType="hashmap">
+        SELECT * FROM carclass WHERE cc_send LIKE concat(#{nowDate},'%')
+    </select>
+
+    <select id='selectTrain' resultType="hashmap">
+        SELECT * FROM trainclass WHERE tc_send LIKE concat(#{nowDate},'%')
+    </select>
+
+    <select id="selectPlane" resultType="hashmap">
+        SELECT * FROM planeclass WHERE pc_send LIKE concat(#{nowDate},'%')
+    </select>
+
+</mapper>
+
+

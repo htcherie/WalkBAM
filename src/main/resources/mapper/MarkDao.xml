@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.walkBAM.dao.MarkDao">
+
+
+    <delete id="deleteMark">
+        DELETE FROM `mark` WHERE m_id=#{m_id}
+    </delete>
+
+    <delete id="deleteUserMark">
+        DELETE FROM `mark` WHERE m_uid=#{m_uid}
+    </delete>
+
+    <update id="updateMark">
+        UPDATE `mark`
+        <set>
+            <if test="mark.m_name != null or mark.m_name != ''">
+                `m_name`=#{mark.m_name},
+            </if>
+            <if test="mark.m_address != null or mark.m_address != ''">
+                `m_address`=#{mark.m_address},
+            </if>
+            <if test="mark.m_phone != null or mark.m_phone != ''">
+                `m_phone`=#{mark.m_phone}
+            </if>
+        </set>
+        <where>
+            <if test="mark.m_id != null or mark.m_id != ''">
+                `m_id`=#{mark.m_id}
+            </if>
+        </where>
+    </update>
+
+
+    <update id="updateMarkAudit">
+        UPDATE `mark` set `m_state`=#{m_state},`m_audit`=NOW() where `m_id`=#{m_id}
+    </update>
+
+
+    <select id='selectAllMark' resultType="hashmap">
+        select * from (SELECT * FROM mark m INNER JOIN USER u ON m.`m_uid`=u.`u_id`
+        <where>
+            <if test="search != null and search != ''">
+                m.m_id LIKE concat('%',#{search},'%') or
+                m.m_name LIKE concat('%',#{search},'%') or
+                m.m_address LIKE concat('%',#{search},'%') or
+                m.m_phone LIKE concat('%',#{search},'%') or
+                u.u_name LIKE concat('%',#{search},'%')
+            </if>
+        </where>) s
+        <where>
+            <choose>
+                <when test="m_state == 99">
+                    s.`m_state` != 0
+                </when>
+                <when test="m_state !=null">
+                    s.`m_state` = #{m_state}
+                </when>
+            </choose>
+        </where>
+        order by s.m_audit desc
+    </select>
+
+    <select id="selectMarkByUid" resultType="Mark">
+      SELECT * FROM mark WHERE m_uid = #{u_id}
+    </select>
+
+
+</mapper>
+
+
